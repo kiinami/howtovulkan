@@ -459,8 +459,8 @@ int main(int argc, char* argv[])
 	chk(vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineCI, nullptr, &pipeline));
 	// Render loop
 	uint64_t lastTime{ SDL_GetTicks() };
-	bool isOpen{ true };
-	while (isOpen) {
+	bool quit{ false };
+	while (!quit) {
 		// Sync
 		chk(vkWaitForFences(device, 1, &fences[frameIndex], true, UINT64_MAX));
 		chk(vkResetFences(device, 1, &fences[frameIndex]));
@@ -579,30 +579,35 @@ int main(int argc, char* argv[])
 		};
 		chkSwapchain(vkQueuePresentKHR(queue, &presentInfo));
 		// Event polling
-		uint64_t elapsedTime{ SDL_GetTicks() - lastTime};
+		float elapsedTime{ (SDL_GetTicks() - lastTime) / 1000.0f };
+		lastTime = SDL_GetTicks();
 		for (SDL_Event event; SDL_PollEvent(&event);) {
 			if (event.type == SDL_EVENT_QUIT) {
-				isOpen = false;
+				quit = true;
 				break;
 			}
 			if (event.type == SDL_EVENT_MOUSE_MOTION) {
 				if (event.button.button == SDL_BUTTON_LEFT) {
-					objectRotations[shaderData.selected].x -= (float)event.motion.yrel * (float)elapsedTime / 1000.0f;
-					objectRotations[shaderData.selected].y += (float)event.motion.xrel * (float)elapsedTime / 1000.0f;
+					objectRotations[shaderData.selected].x -= (float)event.motion.yrel * elapsedTime;
+					objectRotations[shaderData.selected].y += (float)event.motion.xrel * elapsedTime;
 				}
 			}
 			if (event.type == SDL_EVENT_MOUSE_WHEEL) {
-				camPos.z += (float)event.wheel.y * 0.025f * (float)elapsedTime;
+				camPos.z += (float)event.wheel.y * elapsedTime * 10.0f;
 			}
 			if (event.type == SDL_EVENT_KEY_DOWN) {
+				if (event.key.key == SDLK_PLUS || event.key.key == SDLK_KP_PLUS) {
+					shaderData.selected = (shaderData.selected < 2) ? shaderData.selected + 1 : 0;
+				}
+				if (event.key.key == SDLK_MINUS || event.key.key == SDLK_KP_MINUS) {
+					shaderData.selected = (shaderData.selected > 0) ? shaderData.selected - 1 : 2;
+				}
 			}
 			// Window resize
 			if (event.type == SDL_EVENT_WINDOW_RESIZED) {
 				updateSwapchain = true;
 			}
-
 		}
-		lastTime = SDL_GetTicks();
 		if (updateSwapchain) {
 			chk(SDL_GetWindowSize(window, &windowSize.x, &windowSize.y));
 			updateSwapchain = false;
