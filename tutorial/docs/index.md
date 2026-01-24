@@ -5,11 +5,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # How to Vulkan in 2026
 
-!!! Tip
-
-	While the tutorial is mostly content complete, it's still being worked on. Minor things might change, and open issues are getting fixed.
-
-	Last updated at 2026-01-24
+*Last update: Replaced SFML with SDL3 (2026-01-24)*
 
 ## About
 
@@ -65,7 +61,7 @@ Vulkan consumes shaders in an intermediate format called [SPIR-V](https://www.kh
 
 ## Vulkan SDK
 
-While it's not required for developing Vulkan applications, the [LunarG Vulkan SDK](https://vulkan.lunarg.com/sdk/home) provides a convenient way to install commonly used libraries and tools, some of which are used in this tutorial. It's therefore recommended to install this. When installing, be sure to select the GLM, Volk, and Vulkan Memory Allocator optional components. Alternatively, you can download these from their respective repositories and adjust the include paths in the CMakeLists.txt file.
+While it's not required for developing Vulkan applications, the [LunarG Vulkan SDK](https://vulkan.lunarg.com/sdk/home) provides a convenient way to install commonly used libraries and tools, some of which are used in this tutorial. It's therefore recommended to install this. When installing, be sure to select the optional GLM, Volk, SDL3 and Vulkan Memory Allocator components. Alternatively, you can download these from their respective repositories and adjust the include paths in the CMakeLists.txt file.
 
 ## Validation layers
 
@@ -1643,7 +1639,7 @@ Calling [vkQueuePresentKHR](https://docs.vulkan.org/refpages/latest/refpages/sou
 
 ### Poll events
 
-Last but not least, we work through the event queue of the operating system. This is done in an additional loop (inside the render loop) where we call SDL's [event polling function](https://wiki.libsdl.org/SDL3/SDL_PollEvent) until all events have been proessed. We only handle event types we're interested in:
+Last but not least, we work through the event queue of the operating system. Thanks to SDL, this code is platform-independent. Processing events is done in an additional loop (inside the render loop) where we call SDL's [event polling function](https://wiki.libsdl.org/SDL3/SDL_PollEvent) until all events have been processed. We only handle event types we're interested in:
 
 ```cpp
 float elapsedTime{ (SDL_GetTicks() - lastTime) / 1000.0f };
