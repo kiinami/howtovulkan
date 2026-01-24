@@ -7,10 +7,6 @@ include(FetchContent)
 set(NAME HowToVulkan)
 project(${NAME})
 
-if (NOT EXISTS $ENV{VULKAN_SDK})
-    message(WARNING "Could not locate Vulkan SDK. Make sure it's installed, or manually provide dependencies (SDL3, VMA, etc.)")
-endif()
-
 if (NOT IS_DIRECTORY $ENV{VULKAN_SDK})
     message(WARNING "Vulkan SDK not detected, if installed please set VULKAN_SDK env var or manually provide libraries")
 else()
