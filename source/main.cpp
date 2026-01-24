@@ -668,6 +668,9 @@ int main(int argc, char* argv[])
 	vkDestroyCommandPool(device, commandPool, nullptr);
 	vkDestroyShaderModule(device, shaderModule, nullptr);
 	vmaDestroyAllocator(allocator);
+	SDL_DestroyWindow(window);
+	SDL_QuitSubSystem(SDL_INIT_VIDEO);
+	SDL_Quit();
 	vkDestroyDevice(device, nullptr);
 	vkDestroyInstance(instance, nullptr);
 }
